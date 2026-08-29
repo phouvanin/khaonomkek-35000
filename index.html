@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ໂປຣໂມຊັນເຂົ້າໜົມເຄັກ 35,000 ກີບ — AungPung Bakery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg: #14110F;
+    --surface: #1E1A16;
+    --surface-2: #26201B;
+    --line: #362E27;
+    --cream: #F3EEE6;
+    --muted: #A79C8E;
+    --gold: #E8A33D;
+    --gold-dim: #C98A2E;
+    --rose: #C1543C;
+    --sage: #7FA37A;
+    --sage-dim: #5E7D5B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 12% 8%, rgba(232,163,61,0.08), transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(193,84,60,0.07), transparent 45%),
+      var(--bg);
+    color: var(--cream);
+    font-family: 'Noto Sans Lao', sans-serif;
+    line-height: 1.5;
+    padding: 0 0 60px;
+  }
+  .wrap{ max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+  .mono{ font-family: 'JetBrains Mono', monospace; }
+  .disp{ font-family: 'Space Grotesk', 'Noto Sans Lao', sans-serif; }
+
+  /* ---------- Header / Hero ---------- */
+  header{
+    padding: 44px 0 34px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 40px;
+  }
+  .eyebrow{
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .hero{
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .hero h1{
+    font-size: 30px;
+    font-weight: 700;
+    max-width: 640px;
+    color: var(--cream);
+  }
+  .hero .sub{
+    color: var(--muted);
+    margin-top: 10px;
+    font-size: 14.5px;
+    max-width: 560px;
+  }
+  .price-tag{
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 26px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    position: relative;
+  }
+  .price-tag::before{
+    content:"";
+    position:absolute;
+    left:-9px; top:50%; transform: translateY(-50%);
+    width:16px; height:16px; border-radius:50%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+  }
+  .price-old{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 19px;
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--rose);
+    text-decoration-thickness: 2px;
+  }
+  .price-arrow{ color: var(--muted); font-size: 18px; }
+  .price-new{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--gold);
+  }
+  .price-new sup{ font-size: 13px; color: var(--muted); font-weight:500; margin-left:2px;}
+
+  /* ---------- KPI row ---------- */
+  .kpi-grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .kpi{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 20px 18px;
+  }
+  .kpi .label{
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .kpi .value{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--cream);
+    display:flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .kpi .value .unit{ font-size: 13px; color: var(--muted); font-weight: 500; font-family:'Noto Sans Lao';}
+  .kpi .note{
+    margin-top: 8px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .kpi .note.good{ color: var(--sage); }
+  .kpi .note.warn{ color: var(--rose); }
+  .kpi .bar-track{
+    margin-top: 12px;
+    height: 5px;
+    border-radius: 4px;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .kpi .bar-fill{
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  }
+
+  /* ---------- Section shell ---------- */
+  section{ margin-bottom: 40px; }
+  .section-head{
+    display:flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .section-head h2{
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--cream);
+  }
+  .section-head .desc{
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .panel{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .legend-dot{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; }
+
+  /* ---------- Two column layout ---------- */
+  .cols{
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .chart-tall{ height: 280px; }
+  .chart-mid{ height: 220px; }
+
+  .product-list{ display:flex; flex-direction:column; gap:14px; margin-top: 6px;}
+  .product-row{ }
+  .product-row .top{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-size: 13.5px; margin-bottom: 6px;
+  }
+  .product-row .name{ color: var(--cream); font-weight:500; }
+  .product-row .figs{ color: var(--muted); font-family:'JetBrains Mono', monospace; font-size: 12px;}
+  .product-row .track{ height:8px; border-radius:5px; background: var(--surface-2); overflow:hidden; }
+  .product-row .fill{ height:100%; border-radius:5px; }
+
+  /* ---------- Table ---------- */
+  table{ width:100%; border-collapse: collapse; font-size: 13px; }
+  thead th{
+    text-align:left;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    font-weight: 600;
+    padding: 0 12px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  tbody td{
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--line);
+    color: var(--cream);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+  }
+  tbody td.lao{ font-family:'Noto Sans Lao'; font-size: 13px;}
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background: rgba(232,163,61,0.04); }
+  .status-pill{
+    display:inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-family:'Noto Sans Lao';
+  }
+  .status-pill.over{ background: rgba(127,163,122,0.15); color: var(--sage); }
+  .status-pill.under{ background: rgba(193,84,60,0.15); color: var(--rose); }
+  .num-right{ text-align:right; }
+
+  footer{
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    display:flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 880px){
+    .kpi-grid{ grid-template-columns: repeat(2, 1fr); }
+    .cols{ grid-template-columns: 1fr; }
+    .hero{ align-items: flex-start; }
+  }
+  @media (max-width: 520px){
+    .kpi-grid{ grid-template-columns: 1fr; }
+    .wrap{ padding: 0 16px; }
+    thead th:nth-child(4), tbody td:nth-child(4){ display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">AUNGPUNG BAKERY · ໜ້າຮ້ານ SUPER</div>
+    <div class="hero">
+      <div>
+        <h1>ຜົນການຂາຍ ໂປຣໂມຊັນຫຼຸດລາຄາເຂົ້າໜົມເຄັກ</h1>
+        <p class="sub">ຕິດຕາມຍອດຂາຍປະຈຳວັນທຽບກັບເປົ້າ 5 ກ່ອງ/ວັນ ສຳລັບເຂົ້າໜົມເຄັກກ່ອງແຟັກ 6 ກ້ອນ 3 ລາຍການ ທີ່ຮ່ວມໂປຣໂມຊັນ · ຂໍ້ມູນ 1–25 ສິງຫາ 2026</p>
+      </div>
+      <div class="price-tag">
+        <span class="price-old mono">38,000</span>
+        <span class="price-arrow">→</span>
+        <span class="price-new">35,000<sup>ກີບ</sup></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="label">ຍອດຂາຍລວມ (ກ່ອງ)</div>
+      <div class="value">120 <span class="unit">ກ່ອງ / 25 ວັນ</span></div>
+      <div class="note">ເປົ້າໝາຍລວມ 125 ກ່ອງ (5×25 ວັນ)</div>
+      <div class="bar-track"><div class="bar-fill" style="width:96%"></div></div>
+    </div>
+    <div class="kpi">
+      <div class="label">ສະເລ່ຍຕໍ່ວັນ</div>
+      <div class="value">4.8 <span class="unit">ກ່ອງ/ວັນ</span></div>
+      <div class="note warn">ຕ່ຳກວ່າເປົ້າ 5 ກ່ອງ/ວັນ ຢູ່ 0.2 ກ່ອງ</div>
+    </div>
+    <div class="kpi">
+      <div class="label">ວັນທີ່ເຮັດໄດ້ຕາມ/ເກີນເປົ້າ</div>
+      <div class="value">11 <span class="unit">/ 25 ວັນ</span></div>
+      <div class="note">ເທົ່າກັບ 44% ຂອງໄລຍະທັງໝົດ</div>
+    </div>
+    <div class="kpi">
+      <div class="label">ຍອດຂາຍ · ສ່ວນຫຼຸດທີ່ໃຫ້ລູກຄ້າ</div>
+      <div class="value mono" style="font-size:22px;">4,200,000 <span class="unit">ກີບ</span></div>
+      <div class="note">ຫຼຸດລາຄາລວມ 360,000 ກີບ (120 ກ່ອງ × 3,000)</div>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-head">
+      <h2>ຍອດຂາຍປະຈຳວັນ ທຽບກັບເປົ້າ 5 ກ່ອງ/ວັນ</h2>
+      <div class="desc"><span class="legend-dot" style="background:var(--gold)"></span>ຈຳນວນກ່ອງທີ່ຂາຍ &nbsp; <span class="legend-dot" style="background:var(--rose)"></span>ເສັ້ນເປົ້າໝາຍ</div>
+    </div>
+    <div class="panel">
+      <div class="chart-tall"><canvas id="dailyChart"></canvas></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="cols">
+      <div class="panel">
+        <div class="section-head" style="margin-bottom:14px;">
+          <h2>ຍອດຂາຍລວມຕໍ່ອາທິດ</h2>
+        </div>
+        <div class="chart-mid"><canvas id="weeklyChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="section-head" style="margin-bottom:6px;">
+          <h2>ແຍກຕາມລາຍການ</h2>
+        </div>
+        <div class="product-list" id="productList"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>ຕາຕະລາງລາຍວັນ</h2>
+      <div class="desc">120 ກ່ອງ · 108 ລາຍການຂາຍ · 25 ວັນ</div>
+    </div>
+    <div class="panel" style="padding:14px 8px;">
+      <table>
+        <thead>
+          <tr>
+            <th style="padding-left:16px;">ວັນທີ</th>
+            <th class="num-right">ຈຳນວນ (ກ່ອງ)</th>
+            <th class="num-right">ຍອດຂາຍ (ກີບ)</th>
+            <th class="num-right">ຈຳນວນລາຍການ</th>
+            <th style="padding-right:16px;">ທຽບເປົ້າ</th>
+          </tr>
+        </thead>
+        <tbody id="dailyTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <span>ແຫຼ່ງຂໍ້ມູນ: POS export — Khaonomkek-35000.xlsx (Promotion ID 15, 16, 17)</span>
+    <span>ອັບເດດ: 25 ສິງຫາ 2026</span>
+  </footer>
+
+</div>
+
+<script>
+const TARGET = 5;
+const daily = {
+"2026-08-01":{qty:2,revenue:70000,tx:1},"2026-08-02":{qty:4,revenue:140000,tx:4},"2026-08-03":{qty:6,revenue:210000,tx:6},
+"2026-08-04":{qty:9,revenue:315000,tx:9},"2026-08-05":{qty:3,revenue:105000,tx:3},"2026-08-06":{qty:9,revenue:315000,tx:7},
+"2026-08-07":{qty:3,revenue:105000,tx:3},"2026-08-08":{qty:4,revenue:140000,tx:4},"2026-08-09":{qty:12,revenue:420000,tx:10},
+"2026-08-10":{qty:1,revenue:35000,tx:1},"2026-08-11":{qty:5,revenue:175000,tx:5},"2026-08-12":{qty:2,revenue:70000,tx:2},
+"2026-08-13":{qty:6,revenue:210000,tx:5},"2026-08-14":{qty:4,revenue:140000,tx:3},"2026-08-15":{qty:7,revenue:245000,tx:7},
+"2026-08-16":{qty:10,revenue:350000,tx:9},"2026-08-17":{qty:5,revenue:175000,tx:4},"2026-08-18":{qty:2,revenue:70000,tx:2},
+"2026-08-19":{qty:2,revenue:70000,tx:2},"2026-08-20":{qty:6,revenue:210000,tx:4},"2026-08-21":{qty:4,revenue:140000,tx:4},
+"2026-08-22":{qty:4,revenue:140000,tx:3},"2026-08-23":{qty:7,revenue:245000,tx:7},"2026-08-24":{qty:1,revenue:35000,tx:1},
+"2026-08-25":{qty:2,revenue:70000,tx:2}
+};
+const productNames = {
+  "15":"ມັບຟິນຊອັ໋ກໂກ້ແລັດ / ຊອັ໋ກຊຣິ໋ບ",
+  "16":"ເຄັກກ້ວຍຫອມ",
+  "17":"ເຄັກໄຂ່ລູກເກດ"
+};
+const productTotals = {
+  "15":{qty:44, revenue:1540000},
+  "16":{qty:55, revenue:1925000},
+  "17":{qty:21, revenue:735000}
+};
+
+const dates = Object.keys(daily).sort();
+const shortLabels = dates.map(d => { const [y,m,day] = d.split('-'); return `${day}/${m}`; });
+const qtyVals = dates.map(d => daily[d].qty);
+
+Chart.defaults.font.family = "'Noto Sans Lao', sans-serif";
+Chart.defaults.color = '#A79C8E';
+
+// Daily bar + target line
+new Chart(document.getElementById('dailyChart'), {
+  type: 'bar',
+  data: {
+    labels: shortLabels,
+    datasets: [
+      {
+        label: 'ຍອດຂາຍ',
+        data: qtyVals,
+        backgroundColor: qtyVals.map(v => v >= TARGET ? '#7FA37A' : '#C98A2E'),
+        borderRadius: 4,
+        maxBarThickness: 26,
+        order: 2
+      },
+      {
+        label: 'ເປົ້າໝາຍ',
+        data: dates.map(() => TARGET),
+        type: 'line',
+        borderColor: '#C1543C',
+        borderWidth: 2,
+        borderDash: [6,4],
+        pointRadius: 0,
+        order: 1
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display:false },
+      tooltip: {
+        backgroundColor: '#1E1A16', borderColor:'#362E27', borderWidth:1,
+        titleColor:'#F3EEE6', bodyColor:'#F3EEE6', padding:10,
+        callbacks: {
+          label: ctx => ctx.datasetIndex === 0 ? `ຂາຍໄດ້ ${ctx.parsed.y} ກ່ອງ` : `ເປົ້າ ${ctx.parsed.y} ກ່ອງ`
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display:false }, ticks:{ font:{size:10.5} } },
+      y: { beginAtZero:true, grid:{ color:'#26201B' }, ticks:{ stepSize:2 } }
+    }
+  }
+});
+
+// Weekly aggregation (Aug 1-25 -> 4 buckets by week-of-month)
+const weekBuckets = [
+  { label:'1–7 ສ.ຫ.', range:[1,7] },
+  { label:'8–14 ສ.ຫ.', range:[8,14] },
+  { label:'15–21 ສ.ຫ.', range:[15,21] },
+  { label:'22–25 ສ.ຫ.', range:[22,25] }
+];
+const weekVals = weekBuckets.map(w => {
+  let sum = 0;
+  dates.forEach(d => {
+    const day = parseInt(d.split('-')[2],10);
+    if (day >= w.range[0] && day <= w.range[1]) sum += daily[d].qty;
+  });
+  return sum;
+});
+
+new Chart(document.getElementById('weeklyChart'), {
+  type: 'bar',
+  data: {
+    labels: weekBuckets.map(w=>w.label),
+    datasets: [{
+      data: weekVals,
+      backgroundColor: '#E8A33D',
+      borderRadius: 6,
+      maxBarThickness: 44
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins: {
+      legend:{display:false},
+      tooltip: {
+        backgroundColor: '#1E1A16', borderColor:'#362E27', borderWidth:1,
+        titleColor:'#F3EEE6', bodyColor:'#F3EEE6', padding:10,
+        callbacks: { label: ctx => `${ctx.parsed.y} ກ່ອງ` }
+      }
+    },
+    scales: {
+      x: { grid:{display:false} },
+      y: { beginAtZero:true, grid:{ color:'#26201B' } }
+    }
+  }
+});
+
+// Product breakdown bars
+const totalQty = Object.values(productTotals).reduce((a,b)=>a+b.qty,0);
+const colors = ['#E8A33D','#C1543C','#7FA37A'];
+const productListEl = document.getElementById('productList');
+Object.keys(productTotals).sort((a,b)=>productTotals[b].qty-productTotals[a].qty).forEach((pid, i) => {
+  const p = productTotals[pid];
+  const pct = Math.round((p.qty/totalQty)*100);
+  const row = document.createElement('div');
+  row.className = 'product-row';
+  row.innerHTML = `
+    <div class="top">
+      <span class="name">${productNames[pid]}</span>
+      <span class="figs">${p.qty} ກ່ອງ · ${pct}%</span>
+    </div>
+    <div class="track"><div class="fill" style="width:${pct}%; background:${colors[i]}"></div></div>
+    <div class="figs" style="margin-top:5px;">${p.revenue.toLocaleString()} ກີບ</div>
+  `;
+  productListEl.appendChild(row);
+});
+
+// Daily table
+const tbody = document.getElementById('dailyTable');
+dates.forEach(d => {
+  const row = daily[d];
+  const [y,m,day] = d.split('-');
+  const met = row.qty >= TARGET;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="lao" style="padding-left:16px;">${day}/${m}/${y}</td>
+    <td class="num-right">${row.qty}</td>
+    <td class="num-right">${row.revenue.toLocaleString()}</td>
+    <td class="num-right">${row.tx}</td>
+    <td style="padding-right:16px;"><span class="status-pill ${met?'over':'under'}">${met?'ຮອດເປົ້າ':'ຕ່ຳກວ່າເປົ້າ'}</span></td>
+  `;
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>
